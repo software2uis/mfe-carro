@@ -1,0 +1,53 @@
+.cart-item {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+  }
+  
+  .item-image {
+    max-width: 100px;
+    height: auto;
+    margin-right: 15px;
+  }
+  
+  .item-details {
+    flex-grow: 1; /* Permite que este contenedor ocupe el espacio disponible */
+  }
+  
+  .item-name {
+    font-size: 18px;
+    margin: 0 0 10px;
+  }
+  
+  .quantity-controls {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .item-quantity {
+    margin: 0 10px;
+    font-weight: bold;
+  }
+  
+  .item-actions {
+    display: flex;
+    gap: 10px; /* Espaciado entre los botones de acciones */
+  }
+  
+  .wishlist-button,
+  .remove-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px; /* Tamaño de icono */
+  }
+  
+  .wishlist-button:hover,
+  .remove-button:hover {
+    color: red; /* Cambiar color al pasar el mouse */
+  }
+  
