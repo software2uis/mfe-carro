@@ -3,24 +3,25 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-carrito',
-  standalone: true, 
+  standalone: true,
   templateUrl: './carrito.component.html',
-  styleUrls: ['./carrito.component.css'], 
-  imports: [CommonModule], 
+  styleUrls: ['./carrito.component.css'],
+  imports: [CommonModule],
 })
 export class CarritoComponent implements OnInit {
   cartItems = [
     {
-      name: 'Artículo 1',
-      imageUrl: 'url_de_la_imagen_1', // Reemplazar con la URL real de la imagen
+      name: 'Carro F1',
+      imageUrl: 'assets/img/F1carro.jpeg',  
+      description: 'Un carro de carreras de Fórmula 1 en madera',
       quantity: 1
     },
     {
-      name: 'Artículo 2',
-      imageUrl: 'url_de_la_imagen_2', // Reemplazar con la URL real de la imagen
+      name: 'Camisa',
+      imageUrl: 'assets/img/Camisa.png',   
+      description: 'Una camisa cómoda de algodón de alta calidad.',
       quantity: 1
     }
-    // Agregar más artículos 
   ];
 
   constructor() { }
