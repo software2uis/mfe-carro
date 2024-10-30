@@ -40,7 +40,7 @@ h1 {
 
 .cart-item {
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     background: white;
     border: 10px;
     border-radius: 10px;
@@ -51,12 +51,12 @@ h1 {
     max-width: 600px;
     align-items: center;
     justify-content: space-between;
-    position: relative; 
+    position: relative;
 }
 
 .cart-item img {
-    max-width: 150px; 
-    margin-right: 20px; 
+    max-width: 150px;
+    margin-right: 20px;
 }
 
 .cart-item:hover {
@@ -64,9 +64,9 @@ h1 {
 }
 
 .item-details {
-    flex-grow: 1; 
+    flex-grow: 1;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
 }
 
 .item-name {
@@ -102,8 +102,8 @@ h1 {
 
 .item-actions {
     display: flex;
-    justify-content: flex-end; 
-    margin-top: 10px; 
+    justify-content: flex-end;
+    margin-top: 10px;
 }
 
 .remove-button, .wishlist-button {
@@ -132,4 +132,14 @@ h1 {
         max-width: 100%;
         margin-bottom: 10px;
     }
+}
+.container {
+  display: flex;
+  flex-direction: column; /* Asegura que los elementos se coloquen en una columna */
+  gap: 40px; /* Espaciado entre los elementos */
+}
+
+/* Opcional: estilos para el app-navbar si los necesitas */
+app-navbar {
+  /* Estilos opcionales para el navbar */
 }

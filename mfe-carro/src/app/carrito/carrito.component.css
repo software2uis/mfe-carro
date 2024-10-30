@@ -1,12 +1,24 @@
 .cart-container {
-  display: flex; /* Contenedor principal como flexbox */
-  justify-content: space-between; /* Espacio entre productos y resumen */
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-items-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .cart-items {
-  flex: 2; /* Asigna más espacio a los productos */
   display: flex;
-  flex-direction: column; /* Alinea los productos en columna */
+  flex-direction: column;
+  width: 70%;
+}
+
+.cart-summary {
+  width: 25%;
+  margin-left: 20px;
+  text-align: right;
 }
 
 .cart-item {
@@ -25,12 +37,23 @@
 }
 
 .item-details {
-  flex-grow: 1; /* Permite que este contenedor ocupe el espacio disponible */
+  flex-grow: 1;
 }
 
 .item-name {
   font-size: 18px;
   margin: 0 0 10px;
+}
+
+.item-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.item-price {
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .quantity-controls {
@@ -46,7 +69,7 @@
 
 .item-actions {
   display: flex;
-  gap: 10px; /* Espaciado entre los botones de acciones */
+  gap: 10px;
 }
 
 .wishlist-button,
@@ -54,28 +77,68 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 20px; /* Tamaño de icono */
+  font-size: 20px;
 }
 
 .wishlist-button:hover,
 .remove-button:hover {
-  color: red; /* Cambiar color al pasar el mouse */
+  color: red;
 }
 
-.cart-summary {
-  flex: 1; /* Espacio para el subtotal y sugerencias */
+.cart-subtotal {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.pay-button {
+  background-color: #ffd700; /* Amarillo */
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 15px;
+  width: 100%; /* Ocupa el ancho completo */
+  text-align: center;
+}
+
+.pay-button:hover {
+  background-color: #ffbf00; /* Un amarillo un poco más oscuro */
+}
+
+.cart-suggestions {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #ddd;
   display: flex;
-  flex-direction: column; /* Alinea subtotal y sugerencias en columna */
-  align-items: flex-end; /* Alinea a la derecha */
-  padding: 10px; /* Agregar padding para mejor presentación */
+  flex-wrap: wrap;
 }
 
-.cart-subtotal,
-.cart-suggestions {
-  margin-bottom: 10px; /* Espaciado entre subtotal y sugerencias */
+.suggested-item {
+  display: inline-block;
+  width: 150px;
+  margin: 10px;
+  text-align: center;
 }
 
-.cart-suggestions {
-  border-top: 1px solid #ddd; /* Línea separadora opcional */
-  padding-top: 10px; /* Padding superior para separación */
+.suggestion-image {
+  max-width: 100px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.cart-suggestions h2 {
+  font-size: 20px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.cart-suggestions button {
+  background-color: #ffd700;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
 }
