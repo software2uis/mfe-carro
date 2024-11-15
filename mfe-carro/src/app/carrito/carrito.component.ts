@@ -9,22 +9,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
 })
 export class CarritoComponent implements OnInit {
-  cartItems = [
-    {
-      name: 'Carro F1',
-      imageUrl: 'assets/img/F1carro.jpeg',
-      description: 'Un carro de carreras de Fórmula 1 en madera',
-      quantity: 1,
-      price: 50000.0
-    },
-    {
-      name: 'Camisa',
-      imageUrl: 'assets/img/Camisa.png',
-      description: 'Una camisa cómoda de algodón de alta calidad.',
-      quantity: 1,
-      price: 80000.0
-    }
-  ];
+  cartItems: any[] = [];
 
   suggestions = [
     {
@@ -42,15 +27,26 @@ export class CarritoComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const savedCart = localStorage.getItem('cartItems');
+    if (savedCart) {
+      this.cartItems = JSON.parse(savedCart);
+    }
+  }
+
+  private updateLocalStorage(): void {
+    localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
+  }
 
   increaseQuantity(item: any) {
     item.quantity++;
+    this.updateLocalStorage();
   }
 
   decreaseQuantity(item: any) {
     if (item.quantity > 1) {
       item.quantity--;
+      this.updateLocalStorage();
     }
   }
 
@@ -60,6 +56,7 @@ export class CarritoComponent implements OnInit {
 
   removeFromCart(item: any) {
     this.cartItems = this.cartItems.filter(cartItem => cartItem !== item);
+    this.updateLocalStorage();
   }
 
   calculateSubtotal() {
@@ -67,7 +64,22 @@ export class CarritoComponent implements OnInit {
   }
 
   addToCart(item: any) {
+    const existingItem = this.cartItems.find(cartItem => cartItem.name === item.name);
+    
+    if (existingItem) {
+      existingItem.quantity++;
+    } else {
+      const newItem = { ...item, quantity: 1 };
+      this.cartItems.push(newItem);
+    }
+    
+    this.updateLocalStorage();
     console.log(`Producto añadido al carrito: ${item.name}`);
-    // Aquí puedes agregar lógica para añadir a carrito
+ 
+  // Ver el contenido del carrito
+  console.log("Contenido del localStorage:", localStorage.getItem('cartItems'));
+
+
   }
+
 }
