@@ -39,21 +39,19 @@ export class CarritoComponent implements OnInit {
     localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
   }
 
-  // Activa el campo de cantidad personalizada
   activateCustomQuantity(item: any) {
     item.customQuantityActive = true;
-    item.customQuantity = item.quantity; // Mantiene la cantidad actual en el campo de texto
+    item.customQuantity = item.quantity; 
   }
   
   onCustomQuantityChange(item: any) {
-    // Aquí puedes manejar la lógica para asegurarte de que el valor es correcto
     if (item.customQuantity < 1) {
       item.customQuantity = 1; // Asegurarse de que la cantidad sea válida
     }
     if (item.customQuantity > 100) {
       item.customQuantity = 100; // Limitar la cantidad máxima
     }
-    item.quantity = item.customQuantity; // Actualizamos el valor de la cantidad
+    item.quantity = item.customQuantity; 
     this.updateLocalStorage();
   }
   
