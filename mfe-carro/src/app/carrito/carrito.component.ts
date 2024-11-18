@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-carrito',
   standalone: true,
   templateUrl: './carrito.component.html',
   styleUrls: ['./carrito.component.css'],
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
 })
 export class CarritoComponent implements OnInit {
-  cartItems: any[] = [];
+  cartItems: any[] = [];  
 
   suggestions = [
     {
@@ -38,18 +39,54 @@ export class CarritoComponent implements OnInit {
     localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
   }
 
-  increaseQuantity(item: any) {
-    item.quantity++;
+  // Activa el campo de cantidad personalizada
+  activateCustomQuantity(item: any) {
+    item.customQuantityActive = true;
+    item.customQuantity = item.quantity; // Mantiene la cantidad actual en el campo de texto
+  }
+  
+  onCustomQuantityChange(item: any) {
+    // Aquí puedes manejar la lógica para asegurarte de que el valor es correcto
+    if (item.customQuantity < 1) {
+      item.customQuantity = 1; // Asegurarse de que la cantidad sea válida
+    }
+    if (item.customQuantity > 100) {
+      item.customQuantity = 100; // Limitar la cantidad máxima
+    }
+    item.quantity = item.customQuantity; // Actualizamos el valor de la cantidad
     this.updateLocalStorage();
   }
-
-  decreaseQuantity(item: any) {
-    if (item.quantity > 1) {
-      item.quantity--;
-      this.updateLocalStorage();
+  
+  updateCustomQuantity(item: any) {
+    // Asegurarnos de que la cantidad ingresada sea válida (entre 1 y 100)
+    if (item.customQuantity < 1) {
+      item.customQuantity = 1; // Asegurarse de que la cantidad mínima sea 1
     }
+    if (item.customQuantity > 100) {
+      item.customQuantity = 100; // Limitar la cantidad máxima a 100
+    }
+  
+    // Si el valor ingresado es entre 1 y 9, se vuelve a mostrar la lista
+    if (item.customQuantity >= 1 && item.customQuantity <= 9) {
+      item.quantity = item.customQuantity; // Se guarda el valor de la cantidad
+      item.isCustomQuantity = false; // Ocultar el campo personalizado y mostrar la lista
+    } else {
+      item.quantity = item.customQuantity; // Guardar el valor personalizado
+      item.isCustomQuantity = true; // Mantener el campo personalizado visible
+    }
+  
+    this.updateLocalStorage(); // Guarda la nueva cantidad en el almacenamiento local
   }
-
+  
+  
+  onQuantityChange(item: any) {
+    if (item.quantity === 'custom') {
+      item.isCustomQuantity = true; // Mostrar el campo personalizado si se selecciona "custom"
+    } else {
+      item.isCustomQuantity = false; // Mostrar la lista si se elige una cantidad normal
+    }
+  }  
+    
   addToWishlist(item: any) {
     console.log(`Añadido a la lista de deseos: ${item.name}`);
   }
@@ -57,12 +94,21 @@ export class CarritoComponent implements OnInit {
   removeFromCart(item: any) {
     this.cartItems = this.cartItems.filter(cartItem => cartItem !== item);
     this.updateLocalStorage();
-  }
+    alert(`Producto eliminado del carrito: ${item.name}`);
+  }  
 
   calculateSubtotal() {
-    return this.cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return this.cartItems.reduce((total, item) => {
+      return total + (item.price * item.quantity);
+    }, 0);
   }
-
+  
+  calculateItemCount() {
+    return this.cartItems.reduce((total, item) => {
+      return total + Number(item.quantity);
+    }, 0);
+  }
+  
   addToCart(item: any) {
     const existingItem = this.cartItems.find(cartItem => cartItem.name === item.name);
     
@@ -74,12 +120,7 @@ export class CarritoComponent implements OnInit {
     }
     
     this.updateLocalStorage();
-    console.log(`Producto añadido al carrito: ${item.name}`);
- 
-  // Ver el contenido del carrito
-  console.log("Contenido del localStorage:", localStorage.getItem('cartItems'));
-
-
-  }
+    alert(`Producto añadido al carrito: ${item.name}`);
+  }  
 
 }
