@@ -4,7 +4,7 @@ import { CarritoComponent } from './carrito/carrito.component'; // Asegúrate de
 // Exporta las rutas
 export const routes: Routes = [
   { path: 'carrito', component: CarritoComponent }, // Ruta para el carrito
-  { path: '', redirectTo: '/carrito', pathMatch: 'full' }, // Redirige al carrito al cargar la aplicación
+  { path: '', redirectTo: 'carrito', pathMatch: 'full' }, // Redirige al carrito al cargar la aplicación
 ];
 
 

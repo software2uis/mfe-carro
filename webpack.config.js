@@ -30,7 +30,7 @@ module.exports = {
     new ModuleFederationPlugin({
 
       // Para remotos (ajusta según sea necesario)
-      name: "mfeCarro",
+      name: "mfe_carrito",
       filename: "remoteEntry.js",
       exposes: {
         './Component': './src/app/app.component.ts',
