@@ -1,74 +1,74 @@
-<div class="cart-container">
-  <div class="cart-items-summary">
-    <div class="cart-items">
-      <div class="cart-item" *ngFor="let item of cartItems">
-        <img [src]="item.imageUrl" alt="{{ item.name }}" class="item-image" />
-        <div class="item-details">
-          <h3 class="item-name">{{ item.name }}</h3>
-          <p class="item-description">{{ item.description }}</p>
-          <p class="item-price">Precio: <b>{{ item.price | currency }}</b></p>
-          <div class="quantity-controls">
-            <label for="quantity-select" class="label-quantity">Cantidad:</label>
-            
-            <!-- Si la cantidad es custom, se muestra el input de cantidad personalizada -->
-            <div *ngIf="item.isCustomQuantity">
-              <input
-                type="number"
-                [(ngModel)]="item.customQuantity"
-                min="1"
-                max="100"
-                placeholder="Cantidad"
-                class="custom-quantity-input"
-              />
-              <button
-                (click)="updateCustomQuantity(item)"
-                class="update-button"
-              >
-                Actualizar
-              </button>
+<div class="cart-container" [style]="{'min-height': '80vh', 'margin-top': '80px'}">
+    <div class="cart-items-summary">
+        <div class="cart-items">
+            <div class="cart-item" *ngFor="let item of cartItems">
+                <img [src]="item.imageUrl" alt="{{ item.name }}" class="item-image" />
+                <div class="item-details">
+                    <h3 class="item-name">{{ item.name }}</h3>
+                    <p class="item-description">{{ item.description }}</p>
+                    <p class="item-price">Precio: <b>{{ item.price | currency }}</b></p>
+                    <div class="quantity-controls">
+                        <label for="quantity-select" class="label-quantity">Cantidad:</label>
+
+                        <!-- Si la cantidad es custom, se muestra el input de cantidad personalizada -->
+                        <div *ngIf="item.isCustomQuantity">
+                            <input
+                                    type="number"
+                                    [(ngModel)]="item.customQuantity"
+                                    min="1"
+                                    max="100"
+                                    placeholder="Cantidad"
+                                    class="custom-quantity-input"
+                            />
+                            <button
+                                    (click)="updateCustomQuantity(item)"
+                                    class="update-button"
+                            >
+                                Actualizar
+                            </button>
+                        </div>
+
+                        <select
+                                *ngIf="!item.isCustomQuantity"
+                                id="quantity-select"
+                                [(ngModel)]="item.quantity"
+                                (change)="onQuantityChange(item)"
+                                class="quantity-select"
+                        >
+                            <option *ngFor="let num of [1, 2, 3, 4, 5, 6, 7, 8, 9]" [value]="num">
+                                {{ num }}
+                            </option>
+                            <option value="custom">+10</option>
+                        </select>
+                    </div>
+                    <div class="item-actions">
+                        <button (click)="addToWishlist(item)" class="wishlist-button" aria-label="Añadir a la lista de deseos">
+                            <i class="fa fa-heart"></i>
+                        </button>
+                        <button (click)="removeFromCart(item)" class="remove-button" aria-label="Eliminar del carrito">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-            
-            <select
-              *ngIf="!item.isCustomQuantity"
-              id="quantity-select"
-              [(ngModel)]="item.quantity"
-              (change)="onQuantityChange(item)"
-              class="quantity-select"
-            >
-              <option *ngFor="let num of [1, 2, 3, 4, 5, 6, 7, 8, 9]" [value]="num">
-                {{ num }}
-              </option>
-              <option value="custom">+10</option>
-            </select>
-          </div>
-          <div class="item-actions">
-            <button (click)="addToWishlist(item)" class="wishlist-button" aria-label="Añadir a la lista de deseos">
-              <i class="fa fa-heart"></i>
-            </button>
-            <button (click)="removeFromCart(item)" class="remove-button" aria-label="Eliminar del carrito">
-              <i class="fa fa-trash"></i>
-            </button>
-          </div>
         </div>
-      </div>
+
+        <!-- Subtotal and Pay Button -->
+        <div class="cart-summary">
+            <div class="cart-subtotal">
+                <p>Subtotal ({{ calculateItemCount() }} items): <b>{{ calculateSubtotal() | currency }}</b></p>
+            </div>
+            <button class="pay-button">Pagar</button>
+        </div>
     </div>
 
-    <!-- Subtotal and Pay Button -->
-    <div class="cart-summary">
-      <div class="cart-subtotal">
-        <p>Subtotal ({{ calculateItemCount() }} items): <b>{{ calculateSubtotal() | currency }}</b></p>
-      </div>
-      <button class="pay-button">Pagar</button>
+    <div class="cart-suggestions">
+        <h2>Sugerencias para ti</h2>
+        <div class="suggested-item" *ngFor="let suggestion of suggestions">
+            <img [src]="suggestion.imageUrl" alt="{{ suggestion.name }}" class="suggestion-image" />
+            <h3>{{ suggestion.name }}</h3>
+            <p>{{ suggestion.price | currency }}</p>
+            <button (click)="addToCart(suggestion)">Agregar al carrito</button>
+        </div>
     </div>
-  </div>
-
-  <div class="cart-suggestions">
-    <h2>Sugerencias para ti</h2>
-    <div class="suggested-item" *ngFor="let suggestion of suggestions">
-      <img [src]="suggestion.imageUrl" alt="{{ suggestion.name }}" class="suggestion-image" />
-      <h3>{{ suggestion.name }}</h3>
-      <p>{{ suggestion.price | currency }}</p>
-      <button (click)="addToCart(suggestion)">Agregar al carrito</button>
-    </div>
-  </div>
 </div>
