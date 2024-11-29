@@ -10,115 +10,91 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
 })
 export class CarritoComponent implements OnInit {
-  cartItems: any[] = [];  
-
-  suggestions = [
+  cartItems: any[] = []; // Lista de productos en el carrito
+  suggestions: any[] = [
     {
       name: 'Play Station 5',
       imageUrl: 'assets/img/PS5.jpg',
-      price: 3000000.0
+      price: 3000000.0,
     },
     {
       name: 'Monitor 40"',
       imageUrl: 'assets/img/monitor.jpg',
-      price: 1500000.0
-    }
-    // Añade más productos sugeridos aquí
+      price: 1500000.0,
+    },
   ];
 
-  constructor() { }
-
   ngOnInit(): void {
+    // Cargar productos desde localStorage al iniciar el componente
     const savedCart = localStorage.getItem('cartItems');
     if (savedCart) {
       this.cartItems = JSON.parse(savedCart);
+      console.log('Productos cargados desde localStorage al iniciar:', this.cartItems);
+    } else {
+      console.log('No se encontraron productos en localStorage.');
     }
+
+    // Escuchar el evento de "addToCart" emitido por el catálogo
+    window.addEventListener('addToCart', (event: Event) => {
+      const customEvent = event as CustomEvent;
+      this.addToCart(customEvent.detail);
+    });
   }
 
   private updateLocalStorage(): void {
+    // Actualizar el almacenamiento local con los productos en el carrito
+    console.log('Actualizando localStorage con:', this.cartItems);
     localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
   }
 
-  activateCustomQuantity(item: any) {
-    item.customQuantityActive = true;
-    item.customQuantity = item.quantity; 
-  }
-  
-  onCustomQuantityChange(item: any) {
-    if (item.customQuantity < 1) {
-      item.customQuantity = 1; // Asegurarse de que la cantidad sea válida
-    }
-    if (item.customQuantity > 100) {
-      item.customQuantity = 100; // Limitar la cantidad máxima
-    }
-    item.quantity = item.customQuantity; 
-    this.updateLocalStorage();
-  }
-  
-  updateCustomQuantity(item: any) {
-    // Asegurarnos de que la cantidad ingresada sea válida (entre 1 y 100)
-    if (item.customQuantity < 1) {
-      item.customQuantity = 1; // Asegurarse de que la cantidad mínima sea 1
-    }
-    if (item.customQuantity > 100) {
-      item.customQuantity = 100; // Limitar la cantidad máxima a 100
-    }
-  
-    // Si el valor ingresado es entre 1 y 9, se vuelve a mostrar la lista
-    if (item.customQuantity >= 1 && item.customQuantity <= 9) {
-      item.quantity = item.customQuantity; // Se guarda el valor de la cantidad
-      item.isCustomQuantity = false; // Ocultar el campo personalizado y mostrar la lista
+  addToCart(product: any): void {
+    console.log('Producto recibido para agregar al carrito:', product);
+
+    // Verificar si el producto ya existe en el carrito
+    const existingItem = this.cartItems.find(item => item.idMongo === product.idMongo);
+    if (existingItem) {
+      existingItem.quantity += product.quantity || 1; // Incrementar la cantidad existente
     } else {
-      item.quantity = item.customQuantity; // Guardar el valor personalizado
-      item.isCustomQuantity = true; // Mantener el campo personalizado visible
+      this.cartItems.push({ ...product, quantity: product.quantity || 1 }); // Agregar nuevo producto
     }
-  
-    this.updateLocalStorage(); // Guarda la nueva cantidad en el almacenamiento local
-  }
-  
-  
-  onQuantityChange(item: any) {
-    if (item.quantity === 'custom') {
-      item.isCustomQuantity = true; // Mostrar el campo personalizado si se selecciona "custom"
-    } else {
-      item.isCustomQuantity = false; // Mostrar la lista si se elige una cantidad normal
-    }
-  }  
-    
-  addToWishlist(item: any) {
-    console.log(`Añadido a la lista de deseos: ${item.name}`);
+
+    this.updateLocalStorage(); // Guardar los cambios en localStorage
+    console.log('Estado actualizado del carrito:', this.cartItems);
   }
 
-  removeFromCart(item: any) {
+  calculateSubtotal(): number {
+    return this.cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  }
+
+  calculateItemCount(): number {
+    return this.cartItems.reduce((total, item) => total + item.quantity, 0);
+  }
+
+  removeFromCart(item: any): void {
     this.cartItems = this.cartItems.filter(cartItem => cartItem !== item);
     this.updateLocalStorage();
     alert(`Producto eliminado del carrito: ${item.name}`);
-  }  
+  }
 
-  calculateSubtotal() {
-    return this.cartItems.reduce((total, item) => {
-      return total + (item.price * item.quantity);
-    }, 0);
-  }
-  
-  calculateItemCount() {
-    return this.cartItems.reduce((total, item) => {
-      return total + Number(item.quantity);
-    }, 0);
-  }
-  
-  addToCart(item: any) {
-    const existingItem = this.cartItems.find(cartItem => cartItem.name === item.name);
-    
-    if (existingItem) {
-      existingItem.quantity++;
-    } else {
-      const newItem = { ...item, quantity: 1 };
-      this.cartItems.push(newItem);
+  updateCustomQuantity(item: any): void {
+    if (item.customQuantity < 1) {
+      item.customQuantity = 1;
     }
-    
-    this.updateLocalStorage();
-    alert(`Producto añadido al carrito: ${item.name}`);
-  }  
+    if (item.customQuantity > 100) {
+      item.customQuantity = 100;
+    }
 
+    item.quantity = item.customQuantity;
+    item.isCustomQuantity = false;
+    this.updateLocalStorage();
+  }
+
+  onQuantityChange(item: any): void {
+    if (item.quantity === 'custom') {
+      item.isCustomQuantity = true;
+    } else {
+      item.isCustomQuantity = false;
+      this.updateLocalStorage();
+    }
+  }
 }
