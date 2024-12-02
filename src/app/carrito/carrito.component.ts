@@ -116,9 +116,17 @@ export class CarritoComponent implements OnInit {
       const newItem = { ...item, quantity: 1 };
       this.cartItems.push(newItem);
     }
-    
-    this.updateLocalStorage();
-    alert(`Producto añadido al carrito: ${item.name}`);
-  }  
+  }
+  
+  applyDiscount() {
+    alert("No hay códigos de descuentos disponibles actualmente.");
+  }
 
+  calculateTax() {
+    return this.calculateSubtotal() * 0.19;
+  }
+
+  calculateTotal() {
+    return this.calculateSubtotal() + this.calculateTax();
+  }
 }

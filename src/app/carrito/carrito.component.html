@@ -1,50 +1,28 @@
 <div class="cart-container">
-  <div class="cart-items-summary">
+  <div class="cart-content">
     <div class="cart-items">
-      <div class="cart-item" *ngFor="let item of cartItems">
+      <h1 class="section-title main-title">Tu carrito</h1>
+      <div class="divider"></div>
+      <div class="cart-item" *ngFor="let item of cartItems; let last = last">
         <img [src]="item.imageUrl" alt="{{ item.name }}" class="item-image" />
         <div class="item-details">
-          <h3 class="item-name">{{ item.name }}</h3>
+          <div class="item-header">
+            <h3 class="item-name">{{ item.name }}</h3>
+            <p class="item-price"><b>{{ item.price | currency }}</b></p>
+          </div>
           <p class="item-description">{{ item.description }}</p>
-          <p class="item-price">Precio: <b>{{ item.price | currency }}</b></p>
           <div class="quantity-controls">
             <label for="quantity-select" class="label-quantity">Cantidad:</label>
-            
-            <!-- Si la cantidad es custom, se muestra el input de cantidad personalizada -->
-            <div *ngIf="item.isCustomQuantity">
-              <input
-                type="number"
-                [(ngModel)]="item.customQuantity"
-                min="1"
-                max="100"
-                placeholder="Cantidad"
-                class="custom-quantity-input"
-              />
-              <button
-                (click)="updateCustomQuantity(item)"
-                class="update-button"
-              >
-                Actualizar
-              </button>
-            </div>
-            
-            <select
-              *ngIf="!item.isCustomQuantity"
-              id="quantity-select"
-              [(ngModel)]="item.quantity"
-              (change)="onQuantityChange(item)"
-              class="quantity-select"
-            >
-              <option *ngFor="let num of [1, 2, 3, 4, 5, 6, 7, 8, 9]" [value]="num">
-                {{ num }}
-              </option>
+            <select *ngIf="!item.isCustomQuantity" id="quantity-select" [(ngModel)]="item.quantity" (change)="onQuantityChange(item)" class="quantity-select">
+              <option *ngFor="let num of [1, 2, 3, 4, 5, 6, 7, 8, 9]" [value]="num">{{ num }}</option>
               <option value="custom">+10</option>
             </select>
+            <div *ngIf="item.isCustomQuantity">
+              <input type="number" [(ngModel)]="item.customQuantity" min="1" max="100" class="custom-quantity-input" />
+              <button (click)="updateCustomQuantity(item)" class="update-button">Actualizar</button>
+            </div>
           </div>
           <div class="item-actions">
-            <button (click)="addToWishlist(item)" class="wishlist-button" aria-label="Añadir a la lista de deseos">
-              <i class="fa fa-heart"></i>
-            </button>
             <button (click)="removeFromCart(item)" class="remove-button" aria-label="Eliminar del carrito">
               <i class="fa fa-trash"></i>
             </button>
@@ -53,22 +31,46 @@
       </div>
     </div>
 
-    <!-- Subtotal and Pay Button -->
     <div class="cart-summary">
-      <div class="cart-subtotal">
-        <p>Subtotal ({{ calculateItemCount() }} items): <b>{{ calculateSubtotal() | currency }}</b></p>
+      <h3 class="section-title main-title centered-text">Resumen de compra</h3>
+      <br>
+      <div>
+        <span class="summary-title">Subtotal ({{ calculateItemCount() }} items):</span>
+        <span class="summary-value">{{ calculateSubtotal() | currency }}</span>
       </div>
+      <div>
+        <span class="summary-title">Impuesto estimado:</span>
+        <span class="summary-value">{{ calculateTax() | currency }}</span>
+      </div>
+      <div>
+        <span class="summary-title">Costo de envio:</span>
+        <span class="summary-value">$0</span>
+      </div>
+      <div class="divider"></div>
+      <br>
+      <div>
+        <span class="summary-title bold">Total calculado:</span>
+        <span class="summary-value">{{ calculateTotal() | currency }}</span>
+      </div>
+      <p class="centered-text">¡Envíos gratis por el primer mes de apertura!</p>
+      <div class="divider"></div>
+      <p class="centered-text">Ingresa un código de promoción</p>
+      <div class="discount-container">
+        <input type="text" id="discountCode">
+        <button class="discount-button" (click)="applyDiscount()">Aplicar</button>
+      </div>
+      <br>
       <button class="pay-button">Pagar</button>
     </div>
   </div>
 
+  <h2 class="section-title main-title">Sugerencias para ti</h2>
   <div class="cart-suggestions">
-    <h2>Sugerencias para ti</h2>
     <div class="suggested-item" *ngFor="let suggestion of suggestions">
       <img [src]="suggestion.imageUrl" alt="{{ suggestion.name }}" class="suggestion-image" />
       <h3>{{ suggestion.name }}</h3>
       <p>{{ suggestion.price | currency }}</p>
-      <button (click)="addToCart(suggestion)">Agregar al carrito</button>
+      <button (click)="addToCart(suggestion)" class="suggestion-button">Agregar al carrito</button>
     </div>
   </div>
 </div>
