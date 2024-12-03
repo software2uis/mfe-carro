@@ -33,5 +33,5 @@ Construction of the container
    ```
 Running the container
     ```bash
-   docker run -p 4600:80 mfe-carro
+    docker run -p 4600:80 mfe-carro
    ```
