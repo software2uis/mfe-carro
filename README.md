@@ -28,11 +28,11 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 # Docker
 Construction of the container
-   ```bash
+   ```
    docker build -t mfe-carro
    ```
 Running the container
 
-    ```bash
+    ```
     docker run -p 4600:80 mfe-carro
    ```
