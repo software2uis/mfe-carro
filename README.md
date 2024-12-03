@@ -33,6 +33,6 @@ Construction of the container
    ```
 Running the container
 
-    ```
+    
     docker run -p 4600:80 mfe-carro
-   ```
+
