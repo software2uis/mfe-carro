@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CarritoService } from '../services/carrito.service';
 import { Router } from '@angular/router';
+import { Product } from '../models/product.interface';
 
 @Component({
   selector: 'app-carrito',
@@ -13,7 +14,7 @@ import { Router } from '@angular/router';
 })
 export class CarritoComponent implements OnInit {
   carritoService = inject(CarritoService);
-  cartItems: any[] = []; // Lista de productos en el carrito
+  cartItems: Product[] = []; // Lista de productos en el carrito
   router = inject(Router);
   suggestions: any[] = [
     {
@@ -125,14 +126,26 @@ export class CarritoComponent implements OnInit {
     this.updateLocalStorage();
   }
 
-  onQuantityChange(item: any): void {
-    if (item.quantity === 'custom') {
-      item.isCustomQuantity = true;
-    } else {
-      item.isCustomQuantity = false;
-      this.updateLocalStorage();
+
+  updateQuantityInCart(item: Product): void {
+
+    if(this.user){
+      this.carritoService.updateProductQuantity(this.user, item.idMongo, item.quantity)
+      .subscribe(
+        response => {
+          console.log(response);
+          alert(`Cantidad del producto actualizada: ${item.name}`);
+        },
+        error => {
+          console.error(error);
+          alert('Error al actualizar la cantidad del producto.');
+        }
+      );
+    }else{
+      this.updateLocalStorage
     }
-  }
+
+    }
   checkoutOrder(){
     if(this.user){
         alert(`El total de la compra es de: $${this.calculateSubtotal()}`);

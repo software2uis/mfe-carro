@@ -18,6 +18,11 @@ export class CarritoService {
     return this.http.post<string>(url, products , {params:{"username": username}  });
   }
 
+  updateProductQuantity(username: string, productId: string, quantity: number): Observable<string> {
+    const url = `${this.apiUrl}/update-quantity`;
+    return this.http.put<string>(url,null, { params: { username, productId, quantity: quantity} });
+  }
+
   removeProductFromCart(productId: string, username: string): Observable<string> {
     const url = `${this.apiUrl}/remove/${productId}`;
     
