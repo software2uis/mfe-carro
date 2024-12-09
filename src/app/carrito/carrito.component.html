@@ -58,7 +58,7 @@
         <div class="cart-subtotal">
           <p>Subtotal ({{ calculateItemCount() }} items): <b>{{ calculateSubtotal() | currency }}</b></p>
         </div>
-        <button class="pay-button">Pagar</button>
+        <button class="pay-button" (click)="checkoutOrder()" >Pagar</button>
       </div>
     </div>
   

@@ -1,32 +1,28 @@
-# Etapa 1: Construcción
-FROM node:20 as build
-
-# Crear directorio de trabajo
+FROM node:20 AS dev-deps
 WORKDIR /app
+COPY package.json package.json
+RUN yarn install --frozen-lockfile
 
-# Copiar package.json y package-lock.json
-COPY package.json package-lock.json ./
 
-# Instalar dependencias
-RUN npm install
 
-# Copiar todo el código fuente de la aplicación
+
+FROM node:20 AS builder
+WORKDIR /app
+COPY --from=dev-deps /app/node_modules ./node_modules
 COPY . .
+# RUN yarn test
+RUN yarn build
 
-# Compilar la aplicación Angular en modo producción
-RUN npm run build -- --configuration production
+# FROM node:19-alpine3.15 AS prod-deps
+# WORKDIR /app
+# COPY package.json package.json
+# RUN yarn install --prod --frozen-lockfile
 
-# Etapa 2: Servidor de producción
-FROM nginx:1.25
 
-# Copiar la aplicación compilada desde la etapa de construcción
-COPY --from=build /app/dist/mfe-carro /usr/share/nginx/html
-
-# Copiar el archivo de configuración personalizado para Nginx si lo tienes
-# COPY nginx.conf /etc/nginx/nginx.conf
-
-# Exponer el puerto 80
+FROM nginx:1.25 AS prod
 EXPOSE 80
+COPY --from=builder /app/dist/mfe-carro /usr/share/nginx/html
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx/nginx.conf /etc/nginx/conf.d
+CMD [ "nginx", "-g", "daemon off;"]
 
-# Comando para iniciar Nginx
-CMD ["nginx", "-g", "daemon off;"]
