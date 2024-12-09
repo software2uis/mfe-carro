@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CarritoService } from '../services/carrito.service';
 import { Router } from '@angular/router';
 import { Product } from '../models/product.interface';
+import { catchError, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-carrito',
@@ -130,17 +131,15 @@ export class CarritoComponent implements OnInit {
   updateQuantityInCart(item: Product): void {
 
     if(this.user){
-      this.carritoService.updateProductQuantity(this.user, item.idMongo, item.quantity)
+      this.carritoService.updateProductQuantity(this.user, item, item.quantity)
       .subscribe(
-        response => {
-          console.log(response);
-          alert(`Cantidad del producto actualizada: ${item.name}`);
-        },
-        error => {
-          console.error(error);
-          alert('Error al actualizar la cantidad del producto.');
+        (res)=>{
+          if(res){
+            alert('Cantidad del producto actualizada correctamente.');
+          }
         }
       );
+      
     }else{
       this.updateLocalStorage
     }
@@ -148,7 +147,7 @@ export class CarritoComponent implements OnInit {
     }
   checkoutOrder(){
     if(this.user){
-        alert(`El total de la compra es de: $${this.calculateSubtotal()}`);
+      this.router.navigateByUrl('/checkout/resumen')
     }else{
       this.router.navigate(['/login']);
     }
