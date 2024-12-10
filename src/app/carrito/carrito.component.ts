@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CarritoService } from '../services/carrito.service';
+import { Router } from '@angular/router';
+import { Product } from '../models/product.interface';
+import { catchError, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-carrito',
@@ -10,7 +14,9 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
 })
 export class CarritoComponent implements OnInit {
-  cartItems: any[] = []; // Lista de productos en el carrito
+  carritoService = inject(CarritoService);
+  cartItems: Product[] = []; // Lista de productos en el carrito
+  router = inject(Router);
   suggestions: any[] = [
     {
       name: 'Play Station 5',
@@ -23,28 +29,55 @@ export class CarritoComponent implements OnInit {
       price: 1500000.0,
     },
   ];
+  user: string  | null = null;
 
   ngOnInit(): void {
     // Cargar productos desde localStorage al iniciar el componente
-    const savedCart = localStorage.getItem('cartItems');
-    if (savedCart) {
-      this.cartItems = JSON.parse(savedCart);
-      console.log('Productos cargados desde localStorage al iniciar:', this.cartItems);
-    } else {
-      console.log('No se encontraron productos en localStorage.');
-    }
+    this.user = localStorage.getItem('username');
 
+    if(this.user){
+      this.carritoService.getCartContents(this.user).subscribe((products) =>{
+
+          products.filter((product) => product.idMongo !== null).forEach((product) => {
+            this.cartItems.push(product);
+          }) 
+          const savedCart = localStorage.getItem('cartItems');
+          if (savedCart) {
+            console.log('Productos cargados desde localStorage al iniciar:', this.cartItems);
+            const cartItems = JSON.parse(savedCart);
+            this.carritoService.addProductsToCart( cartItems, this.user!).subscribe()
+            this.cartItems.push(...cartItems);
+            localStorage.removeItem('cartItems');
+
+          } else {
+            console.log('No se encontraron productos en localStorage.');
+        }
+      })
+    }else{
+      const savedCart = localStorage.getItem('cartItems');
+      if (savedCart) {
+        this.cartItems = JSON.parse(savedCart);
+        console.log('Productos cargados desde localStorage al iniciar:', this.cartItems);
+      } else {
+        console.log('No se encontraron productos en localStorage.');
+      }
+    }
     // Escuchar el evento de "addToCart" emitido por el catálogo
     window.addEventListener('addToCart', (event: Event) => {
       const customEvent = event as CustomEvent;
-      this.addToCart(customEvent.detail);
+      console.log(customEvent.detail.cart);
+      this.addToCart(customEvent.detail.cart);
     });
   }
 
   private updateLocalStorage(): void {
     // Actualizar el almacenamiento local con los productos en el carrito
     console.log('Actualizando localStorage con:', this.cartItems);
-    localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
+    if(this.user){
+      this.carritoService.addProductsToCart( this.cartItems, this.user).subscribe()
+    }else{
+      localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
+    }
   }
 
   addToCart(product: any): void {
@@ -72,7 +105,12 @@ export class CarritoComponent implements OnInit {
 
   removeFromCart(item: any): void {
     this.cartItems = this.cartItems.filter(cartItem => cartItem !== item);
-    this.updateLocalStorage();
+    if(this.user){
+      this.carritoService.removeProductFromCart(item.idMongo, this.user).subscribe()
+    }else{
+      this.updateLocalStorage();
+
+    }
     alert(`Producto eliminado del carrito: ${item.name}`);
   }
 
@@ -89,12 +127,29 @@ export class CarritoComponent implements OnInit {
     this.updateLocalStorage();
   }
 
-  onQuantityChange(item: any): void {
-    if (item.quantity === 'custom') {
-      item.isCustomQuantity = true;
-    } else {
-      item.isCustomQuantity = false;
-      this.updateLocalStorage();
+
+  updateQuantityInCart(item: Product): void {
+
+    if(this.user){
+      this.carritoService.updateProductQuantity(this.user, item, item.quantity)
+      .subscribe(
+        (res)=>{
+          if(res){
+            alert('Cantidad del producto actualizada correctamente.');
+          }
+        }
+      );
+      
+    }else{
+      this.updateLocalStorage
+    }
+
+    }
+  checkoutOrder(){
+    if(this.user){
+      this.router.navigateByUrl('/checkout/resumen')
+    }else{
+      this.router.navigate(['/login']);
     }
   }
 }
